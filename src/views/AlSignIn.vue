@@ -7,7 +7,9 @@
           <div class="al-sign-in__wrapper-network">
             <label>
               <span class="al-sign-in__title">
-                Welcome my app <span class="text-blue-300"> task manager.</span> <br> My name Sergey and this my pet project <br> Sign in width:
+                Welcome my app <span class="text-blue-300"> task manager.</span> 
+                <br> My name Sergey and this my pet project 
+                <br> Sign in width:
               </span>
             </label>
             <div class="al-sign-in__component-auth-sign-in-with">
@@ -20,41 +22,43 @@
               <AlAuthSignInWith 
                 :imgNetworkSrc="iconGithubPath"
                 :socialNetwork="labelSignInWithGitHub"
+                @click="signInWithGithub()"
               />
             </div>
           </div>
         </div>
         <div class="al-sign-in__login-form-box">
           <div class="al-sign-in__wrapper-form">
-
+            <!-- FORM -->
             <form class="al-sign-in__form" action="">
               <span class="al-sign-in__label-form">
                 Авторизация
               </span>
               <div class="al-sign-in__input">
+                <!-- LOGIN -->
                 <AlAuthInput 
-                  :input="rend()"
+                  v-model="emailValue"
                   :authTypeInput="typeInputEmail"
                   :authPlaceholderInput="placeholderLogin"
                   :authInputTypeValue="authInputTypeValueEmail"
                 />
-                  <!-- :value="emailValue" -->
+                  <!-- PASSWORD -->
                 <AlAuthInput 
+                  v-model="passwordValue"
                   :authTypeInput="typeInputPassword"
                   :authPlaceholderInput="placeholderPassword"
                   :authInputTypeValue="authInputTypeValuePassword"
                 />
-                  <!-- :value="passwordValue" -->
                 <div class="mt-5 flex justify-center">
                   <AlAuthBtn 
+                    :authBtnName="btnNameSignIn"
                     @click="$router.push('/registration')"
                   />
-
                 </div>
               </div>
             </form>
             
-            <div class="al-sign-in__registration text-center">
+            <div class="al-sign-in__registration-link text-center">
               <span class="
                 cursor-pointer
                 transition
@@ -67,6 +71,7 @@
                   </router-link>
                 </span>
             </div>
+            {{ log }}
           </div>
         </div>
 
@@ -99,6 +104,8 @@ export default {
     emailValue: '',
     passwordValue: '',
     
+    btnNameSignIn: 'Авторизация',
+
     iconGooglePath: '../src/assets/authIcon/google.png',
     iconGithubPath: '../src/assets/authIcon/github.png',
 
@@ -125,30 +132,26 @@ export default {
 
 
   mounted() {
-    this.$store.getters.loadStateAuthChange
     if (this.$store.state.user) {
-      console.log('this.$store.state.user', this.$store.state.user)
-      this.$router.push('/registration')
+      this.$router.push('/app')
     }
   },
 
   computed: {
-    onAuthStateChenged() {
-      this.$store.getters.onAuthStateChange
-      console.log(this.$store.state.userState, 'user state') 
-    }    
+    log() {
+      console.log(this.emailValue, this.passwordValue)
+    }
   },
 
   methods: {
-    rend(event) {
-      console.log('alSignIn', event)
+    signInWithGoogle() {
+      this.$store.dispatch('signInWithGoogle') 
     },
 
-    async signInWithGoogle() {
-      await this.$store.dispatch('signInWithGoogle') 
-    },
-
-   
+    signInWithGithub() {
+      this.$store.dispatch('signInWithGithub') 
+    }
+    
   }
 }
 </script>
@@ -282,7 +285,7 @@ export default {
     ;
   }
 
-  .al-sign-in__registration {
+  .al-sign-in__registration-link {
     @apply
     m-4
     ;

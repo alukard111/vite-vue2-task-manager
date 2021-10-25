@@ -7,7 +7,9 @@
 
 <script>
 export default {
-  
+  beforeMount() {
+    this.$store.commit('loadStateAuthChange')
+  }
 };
 </script>
 

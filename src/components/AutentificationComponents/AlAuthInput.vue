@@ -7,10 +7,10 @@
           :placeholder="authPlaceholderInput"
           :type="authTypeInput"
           class="al-auth__input focus:ring-gray-500 "
-          @input="$emit(inputValue = $event.target.value)"
           :value="inputValue"
+          @input="$emit('input', $event.target.value)"
         >
-        {{ renderInput }}
+      
       </label>
     </div>
   </div>
@@ -55,9 +55,7 @@ export default {
   }),
 
   computed: {
-    renderInput() {
-      return this.authWriteInputToStore()
-    }
+  
   },
   
   methods: {
@@ -65,14 +63,6 @@ export default {
       return onFocusInput = !onFocusInput
     },
 
-    authWriteInputToStore() {
-      if (this.authInputTypeValue === 'email') {
-        this.$store.state.inputEmail = this.inputValue
-      } else if (this.authInputTypeValue === 'password') {
-        this.$store.state.inputPassword = this.inputValue
-      }
-      return console.log(this.$store.state.inputEmail, ' :email', this.$store.state.inputPassword, ' :password')
-    }
   }
 
 }

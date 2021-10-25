@@ -12,7 +12,7 @@
         >
       <div class="al-sign-in__login-form-box">
         <div class="al-sign-in__wrapper-form">
-
+        <!-- FORM -->
           <form class="al-sign-in__form" action="">
             <span class="al-sign-in__label-form">
               Регистрация
@@ -21,6 +21,7 @@
               <AlAuthInput 
                 :authPlaceholderInput="labelEmail"
                 :authTypeInput="typeEmail"
+                v-model="emailValue"
                 :authInputTypeValue="authInputTypeValueEmail"
                 ref="refInputEmail"
               />
@@ -28,11 +29,13 @@
               <AlAuthInput 
                 :authPlaceholderInput="labelPassword"
                 :authTypeInput="typePassword"
+                v-model="passwordValue"
                 :authInputTypeValue="authInputTypeValuePassword"
               />
                 
               <div class="mt-5 flex justify-center">
                 <AlAuthBtn 
+                  @click="createAccount()"
                   :authBtnName="btnName"
                 />
               </div>
@@ -52,14 +55,12 @@ import AlAuthInput from '../components/AutentificationComponents/AlAuthInput.vue
 import AlAuthBtn from '../components/AutentificationComponents/AlAuthBtn.vue'
 
 
-
-
-
 export default {
   components: {
     AlAuthInput,
     AlAuthBtn
   },
+
 
   data: () => ({
     labelEmail: 'E-mail',
@@ -70,22 +71,47 @@ export default {
     authInputTypeValueEmail: 'email',
     authInputTypeValuePassword: 'password', 
 
+    emailValue: '',
+    passwordValue: '',
+
     btnName: 'Создать аккаунт',
 
     focusEmail: false,
   }),
 
+
   mounted() {
     this.onMounted()
   },
   
+  
   methods: {
     onMounted() {
-      this.$store.commit('getDatabase')
+      // this.$store.commit('setStateDatabase')
       // this.$store.dispatch('setValueDB')
-      this.$store.dispatch('getRef')
-      console.log(this.$store.state.database)
+      // this.$store.dispatch('getReference')
     },
+
+    createAccount() {
+      const password = this.passwordValue.split('').join('')
+      console.log(password, typeof(password))
+      if (this.passwordValue.split('').join('').length > 6 && !Array.isArray(this.passwordValue)) {
+        console.log(password, typeof(this.passwordValue.split('').join('')), 'this.passwordValue.split().join()')
+        this.$store.dispatch({
+          type: 'createAccountWithEmailAndPassword',
+          email: this.emailValue,
+          password: this.passwordValue.split('').join(''),
+        })
+      } else {
+        alert('your password is wrong')
+      }
+    },
+
+    correctedInputValue() {
+      if (this.passwordValue.split().join('').length > 6) {
+
+      }
+    }
 
     
   }

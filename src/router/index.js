@@ -17,6 +17,11 @@ const routes = [
     path: '/registration',
     name: 'AlRegistration',
     component: () => import('../views/AlRegistration.vue')
+  },
+  {
+    path: '/app',
+    name: 'AlAppMain',
+    component: () => import('../views/AlAppMain.vue')
   }
 ]
 
