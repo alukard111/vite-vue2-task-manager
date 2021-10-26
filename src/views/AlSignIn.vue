@@ -1,5 +1,10 @@
 <template>
   <div class="al-sign-in">
+    <div class="al-sign-in__alert fixed top-10 right-10 w-auto h-auto" v-show="Boolean(getErrorMessageToAlert)">
+      <AlAuthAlertError 
+        :errorMessage="getErrorMessageToAlert"
+      />  
+    </div>
     <div class="al-sign-in__wrapper">
 
       <div class="al-sign-in__wrapper-box">
@@ -9,7 +14,7 @@
               <span class="al-sign-in__title">
                 Welcome my app <span class="text-blue-300"> task manager.</span> 
                 <br> My name Sergey and this my pet project 
-                <br> Sign in width:
+                <br> Sign in with:
               </span>
             </label>
             <div class="al-sign-in__component-auth-sign-in-with">
@@ -41,6 +46,8 @@
                   :authTypeInput="typeInputEmail"
                   :authPlaceholderInput="placeholderLogin"
                   :authInputTypeValue="authInputTypeValueEmail"
+                  :authInputErrorStylePlaceholder="placeholderLoginError"
+                  
                 />
                   <!-- PASSWORD -->
                 <AlAuthInput 
@@ -48,11 +55,13 @@
                   :authTypeInput="typeInputPassword"
                   :authPlaceholderInput="placeholderPassword"
                   :authInputTypeValue="authInputTypeValuePassword"
+                  :authInputErrorStylePlaceholder="placeholderPasswordError"
+                  
                 />
                 <div class="mt-5 flex justify-center">
                   <AlAuthBtn 
                     :authBtnName="btnNameSignIn"
-                    @click="$router.push('/registration')"
+                    @click="signInWithEmailAndPassword()"
                   />
                 </div>
               </div>
@@ -86,6 +95,7 @@
 import AlAuthInput from '../components/AutentificationComponents/AlAuthInput.vue'
 import AlAuthBtn from '../components/AutentificationComponents/AlAuthBtn.vue'
 import AlAuthSignInWith from '../components/AutentificationComponents/AlAuthSignInWith.vue'
+import AlAuthAlertError from '../components/AutentificationComponents/AlAuthAlertError.vue'
 
 export default {
   data: () => ({
@@ -95,6 +105,8 @@ export default {
 
     placeholderLogin: 'E-mail',
     placeholderPassword: 'Password',
+    placeholderLoginError: false,
+    placeholderPasswordError: false,
 
     typeInputEmail: 'email',
     typeInputPassword: 'password',
@@ -117,7 +129,8 @@ export default {
   components: {
     AlAuthInput,
     AlAuthBtn,
-    AlAuthSignInWith
+    AlAuthSignInWith,
+    AlAuthAlertError,
   },
 
 // 1. При попадании на страницу -- проверяем в сети ли пользователь +
@@ -140,16 +153,34 @@ export default {
   computed: {
     log() {
       console.log(this.emailValue, this.passwordValue)
+    },
+
+    getErrorMessageToAlert() {
+      return this.$store.state.errorMessageAuthUserInput
     }
   },
 
   methods: {
     signInWithGoogle() {
-      this.$store.dispatch('signInWithGoogle') 
+      return this.$store.dispatch('signInWithGoogle') 
     },
 
     signInWithGithub() {
-      this.$store.dispatch('signInWithGithub') 
+      return this.$store.dispatch('signInWithGithub') 
+    },
+
+    signInWithEmailAndPassword() { 
+      this.isInputEmpty()
+      return this.$store.dispatch({
+        type: 'runSignInWithEmailAndPassword',
+        email: this.emailValue,
+        password: this.passwordValue,
+      })
+    },
+
+    isInputEmpty() {
+      this.placeholderLoginError = !Boolean(this.emailValue) ? true : false
+      this.placeholderPasswordError = !Boolean(this.passwordValue) ? true : false
     }
     
   }
@@ -160,11 +191,10 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap');
 
 .al-sign-in__title {
-  font-family: Alfa Slab One;
   text-align: center;
 }
 
-@layer base {
+/* @layer base { */
   .al-sign-in {
     @apply
       flex
@@ -291,5 +321,5 @@ export default {
     ;
   }
 
-}
+/* } */
 </style>

@@ -1,5 +1,6 @@
 module.exports = {
   important: true,
+  mode: 'jit',
   // Active dark mode on class basis
   darkMode: "class",
   i18n: {
@@ -43,13 +44,20 @@ module.exports = {
   variants: {
     extend: {
       dark: ["checked"],
-      backgroundColor: ["checked", "active"],
-      backgroundOpacity: ["active"],
-      borderColor: ["checked", "hover", "active"],
-      borderOpacity: ["active"],
-      textColor: ["active"],
-      inset: ["checked"],
-      zIndex: ["hover", "active"],
+      backgroundColor: ["checked", "active", "before"],
+      backgroundOpacity: ["active", "before"],
+      borderColor: ["checked", "hover", "active", "before"],
+      borderOpacity: ["active", "before"],
+      inset: ["checked", "before"],
+      ringColor: ['hover', 'active', 'focus', "before"],
+      textColor: ["active", "before"],
+      zIndex: ["hover", "active", "before"],
+      content: ["before"],
+      position: ["before"],
+      width: ["before"],
+      height: ["before"]
+
+      
     },
   },
   plugins: [

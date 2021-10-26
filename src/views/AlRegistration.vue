@@ -1,5 +1,11 @@
 <template>
   <div class="flex justify-center items-center w-screen h-screen">
+        <!-- ALERT ERROR/OR SUCCES sign-in -->
+        <div class="al-sign-in__alert fixed top-10 right-10 w-auto h-auto" v-show="Boolean(getErrorMessageToAlert)">
+          <AlAuthAlertError 
+            :errorMessage="getErrorMessageToAlert"
+          />  
+        </div>
     <div class="
         w-4/5
         
@@ -10,7 +16,8 @@
         md:h-3/6     
         lg:w-2/5"
         >
-      <div class="al-sign-in__login-form-box">
+      <div class="al-sign-in__login-form-box" >
+        
         <div class="al-sign-in__wrapper-form">
         <!-- FORM -->
           <form class="al-sign-in__form" action="">
@@ -53,12 +60,13 @@
 <script>
 import AlAuthInput from '../components/AutentificationComponents/AlAuthInput.vue'
 import AlAuthBtn from '../components/AutentificationComponents/AlAuthBtn.vue'
-
+import AlAuthAlertError from '../components/AutentificationComponents/AlAuthAlertError.vue'
 
 export default {
   components: {
     AlAuthInput,
-    AlAuthBtn
+    AlAuthBtn,
+    AlAuthAlertError,
   },
 
 
@@ -81,9 +89,16 @@ export default {
 
 
   mounted() {
-    this.onMounted()
+    // Если alert вылезет и перейти на др страницу, а затем вернуться -- alert так и будет весеть там
+    // поэтому сообщение об ошибке предварительно вбиваем пустое на страницу.
+    this.$store.commit('setErrorMessageInState', '')
   },
   
+  computed: {
+    getErrorMessageToAlert() {
+      return this.$store.state.errorCreateUserInputAlertMessage
+    }
+  },
   
   methods: {
     onMounted() {
@@ -93,25 +108,14 @@ export default {
     },
 
     createAccount() {
-      const password = this.passwordValue.split('').join('')
-      console.log(password, typeof(password))
-      if (this.passwordValue.split('').join('').length > 6 && !Array.isArray(this.passwordValue)) {
-        console.log(password, typeof(this.passwordValue.split('').join('')), 'this.passwordValue.split().join()')
-        this.$store.dispatch({
-          type: 'createAccountWithEmailAndPassword',
-          email: this.emailValue,
-          password: this.passwordValue.split('').join(''),
-        })
-      } else {
-        alert('your password is wrong')
-      }
+      this.$store.dispatch({
+        type: 'createAccountWithEmailAndPassword',
+        email: this.emailValue,
+        password: this.passwordValue,
+      })
     },
+    
 
-    correctedInputValue() {
-      if (this.passwordValue.split().join('').length > 6) {
-
-      }
-    }
 
     
   }
@@ -119,7 +123,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-@layer base {
+/* @layer base { */
   .al-sign-in__login-form-box {
     @apply
       border-l
@@ -158,5 +162,5 @@ export default {
       text-center
     ;
   }
-}
+/* } */
 </style>

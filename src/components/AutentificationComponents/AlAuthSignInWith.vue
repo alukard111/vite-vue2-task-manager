@@ -52,7 +52,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-@layer base {
+/* @layer base { */
   .al-auth-sign-in-with__wrapper {
     @apply
       border-2
@@ -117,5 +117,5 @@ export default {
     ;
   }
 
-}
+/* } */
 </style>

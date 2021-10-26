@@ -9,10 +9,12 @@ import {
   signOut,
   signInWithPopup,
   signInWithRedirect,
+  signInWithEmailAndPassword,
   GoogleAuthProvider,
   GithubAuthProvider,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  
 } from 'firebase/auth'
 
 
@@ -32,6 +34,9 @@ export default new Vuex.Store({
     user: null,
     providerGoogle: null,
     providerGitGub: null,
+
+    errorCreateUserInputAlertMessage: '',
+    errorMessageAuthUserInput: ''
   },
 
 
@@ -47,6 +52,39 @@ export default new Vuex.Store({
       state.providerGoogle = new GoogleAuthProvider()
       state.providerGitGub = new GithubAuthProvider()
     },
+
+    // ERROR__MESSAGE__ALERT
+    setErrorMessageInState(state, error) {
+      console.log(error.includes('email'))
+      if (error.includes('in-use')) {
+        state.errorCreateUserInputAlertMessage = 'Такой e-mail уже занят'
+      } else if (error.includes('email')) {
+        state.errorCreateUserInputAlertMessage = 'E-mail введен не корректно'
+      } else if (error.includes('internal-error')) {
+        state.errorCreateUserInputAlertMessage = 'Введите password'
+      } else if (error.includes('weak-password')) {
+        state.errorCreateUserInputAlertMessage = 'Password должен быть минимум из 6 символов'
+      } else if (!Boolean(error)) {
+        state.errorCreateUserInputAlertMessage = error
+      } else {
+        state.errorCreateUserInputAlertMessage = error
+      }
+      setTimeout(() => {
+        state.errorCreateUserInputAlertMessage = ''
+      },5000)
+
+    },
+
+    setErrorMessageWithEmailAndPassword(state, error) {
+      if (error.includes('user-not-found')) {
+        state.errorMessageAuthUserInput = 'Пользователь не найден'
+      } 
+      console.log(error)
+      
+      setTimeout(() => {
+        state.errorMessageAuthUserInput = ''
+      },5000)
+    }
     
   },
 
@@ -134,6 +172,24 @@ export default new Vuex.Store({
           // ...
         });
     },
+    
+    // SIGN__IN__WITH EMAIL__PASSWORD
+    runSignInWithEmailAndPassword(context, valueInput) {
+      signInWithEmailAndPassword(context.state.auth, valueInput.email, valueInput.password)
+        .then((userCredential) => {
+          // Signed in 
+          const user = userCredential.user;
+          // ...
+          context.commit('setErrorMessageWithEmailAndPassword', '')
+          context.commit('loadStateAuthChange')
+          context.dispatch('onAuthStateEnter')
+        })
+        .catch((error) => {
+          const errorCode = error.code
+          const errorMessage = error.message
+          context.commit('setErrorMessageWithEmailAndPassword', errorMessage)
+        });
+    },
 
     // пока не ясно
     // SIGN__IN__WITH_OUT
@@ -150,6 +206,34 @@ export default new Vuex.Store({
         });
     },
 
+    createAccountWithEmailAndPassword(context, value) {
+      // console.log(info.email, info.password, 'info')
+      if (value.password.split('').some((e) => { return e === ' ' })) {
+        return context.commit('setErrorMessageInState', 'В поле password не должно быть пробелов')
+      } 
+      createUserWithEmailAndPassword(context.state.auth, value.email, value.password)
+        .then((userCredential) => {
+          
+          // Signed in 
+          const user = userCredential.user;
+          context.commit('setErrorMessageInState', '')
+          context.commit('loadStateAuthChange')
+          context.dispatch('onAuthStateEnter')
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log('message', errorMessage, 'error.code', error.code )
+          context.commit('setErrorMessageInState', errorMessage)
+          // ..
+        });
+    },
+
+    isASpace(context, isSpace) {
+      return isSpace === ' '
+    },
+
     // перенаправление на др страницу
     onAuthStateEnter(context) {
       onAuthStateChanged(context.state.auth, (user) => {
@@ -162,23 +246,6 @@ export default new Vuex.Store({
       })
     },
 
-    createAccountWithEmailAndPassword(context, value) {
-      // console.log(info.email, info.password, 'info')
-      createUserWithEmailAndPassword(context.state.auth, value.email, value.password)
-        .then((userCredential) => {
-          // Signed in 
-          const user = userCredential.user;
-          context.commit('loadStateAuthChange')
-          context.dispatch('onAuthStateEnter')
-          // ...
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log('message', errorMessage, 'error.code', error.code )
-          // ..
-        });
-    }
     
   },
 

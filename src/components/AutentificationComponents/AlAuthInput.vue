@@ -1,12 +1,13 @@
 <template>
   <div class="al-auth__input-box">
-    <div class="al-auth__wrapper-input">
+    <div class="al-auth__wrapper-input ">
       <label class="al-auth__label">
         <!-- <p>{{ authLabelName }}</p> -->
         <input 
-          :placeholder="authPlaceholderInput"
+          :placeholder="authInputErrorStylePlaceholder ? 'Это обязательное поле' : authPlaceholderInput"
           :type="authTypeInput"
-          class="al-auth__input focus:ring-gray-500 "
+          class="al-auth__input"
+          :class="authInputErrorStylePlaceholder ? 'placeholder-red-500' : ''"
           :value="inputValue"
           @input="$emit('input', $event.target.value)"
         >
@@ -35,6 +36,11 @@ export default {
       require: false,
       default: 'Text'
     },
+    authInputErrorStylePlaceholder: {
+      type: Boolean,
+      require: false,
+      default: false
+    },
     authInputValue: {
       type: String || Number,
       require: true,
@@ -44,7 +50,7 @@ export default {
       type: String || Number,
       require: false,
       default: ''
-    }
+    },
   },
   
   data: () => ({
@@ -55,14 +61,13 @@ export default {
   }),
 
   computed: {
-  
+    
   },
   
   methods: {
     focusInput() {
       return onFocusInput = !onFocusInput
     },
-
   }
 
 }
@@ -72,10 +77,11 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-@layer base {
+/* @layer base { */
   .al-auth__wrapper-input {
     @apply
       text-center
+      relative
     ;
   }
 
@@ -104,6 +110,7 @@ export default {
       text-xs
 
       ring-2
+      focus:ring-gray-500
       ring-gray-600
       ring-opacity-25
       ring-offset-2
@@ -113,14 +120,12 @@ export default {
       transition 
       duration-300
       ease-in-out
-
     ;
   }
 
   
 
-  
 
 
-}
+/* } */
 </style>

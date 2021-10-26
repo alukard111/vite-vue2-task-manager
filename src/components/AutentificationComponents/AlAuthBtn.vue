@@ -80,7 +80,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-@layer base {
+/* @layer base { */
   .al-auth__btn {
     @apply
       w-32
@@ -107,5 +107,5 @@ export default {
       
       active:bg-blue-700 */
 
-}
+/* } */
 </style>
