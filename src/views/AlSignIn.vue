@@ -43,6 +43,7 @@
                 <!-- LOGIN -->
                 <AlAuthInput 
                   v-model="emailValue"
+                  :authInputValue="emailValue"
                   :authTypeInput="typeInputEmail"
                   :authPlaceholderInput="placeholderLogin"
                   :authInputTypeValue="authInputTypeValueEmail"
@@ -52,6 +53,7 @@
                   <!-- PASSWORD -->
                 <AlAuthInput 
                   v-model="passwordValue"
+                  :authInputValue="passwordValue"
                   :authTypeInput="typeInputPassword"
                   :authPlaceholderInput="placeholderPassword"
                   :authInputTypeValue="authInputTypeValuePassword"
@@ -145,7 +147,7 @@ export default {
 
 
   mounted() {
-    if (this.$store.state.user) {
+    if (this.$store.state.auth.user) {
       this.$router.push('/app')
     }
   },
@@ -156,31 +158,33 @@ export default {
     },
 
     getErrorMessageToAlert() {
-      return this.$store.state.errorMessageAuthUserInput
+      return this.$store.state.auth.errorAuthOrCreateUser
     }
   },
 
   methods: {
     signInWithGoogle() {
-      return this.$store.dispatch('signInWithGoogle') 
+      return this.$store.dispatch('auth/signInWithGoogle') 
     },
 
     signInWithGithub() {
-      return this.$store.dispatch('signInWithGithub') 
+      return this.$store.dispatch('auth/signInWithGithub') 
     },
 
     signInWithEmailAndPassword() { 
-      this.isInputEmpty()
-      return this.$store.dispatch({
-        type: 'runSignInWithEmailAndPassword',
-        email: this.emailValue,
-        password: this.passwordValue,
-      })
+      if (this.isInputEmpty()) {
+        return this.$store.dispatch({
+          type: 'auth/runSignInWithEmailAndPassword',
+          email: this.emailValue,
+          password: this.passwordValue,
+        })
+      }
     },
 
     isInputEmpty() {
-      this.placeholderLoginError = !Boolean(this.emailValue) ? true : false
-      this.placeholderPasswordError = !Boolean(this.passwordValue) ? true : false
+      this.placeholderLoginError = !Boolean(this.emailValue)
+      this.placeholderPasswordError = !Boolean(this.passwordValue)
+      return !this.placeholderLoginError && !this.placeholderPasswordError
     }
     
   }

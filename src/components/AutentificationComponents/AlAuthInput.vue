@@ -8,7 +8,7 @@
           :type="authTypeInput"
           class="al-auth__input"
           :class="authInputErrorStylePlaceholder ? 'placeholder-red-500' : ''"
-          :value="inputValue"
+          :value="authInputValue"
           @input="$emit('input', $event.target.value)"
         >
       

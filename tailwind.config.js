@@ -55,9 +55,7 @@ module.exports = {
       content: ["before"],
       position: ["before"],
       width: ["before"],
-      height: ["before"]
-
-      
+      height: ["before"],
     },
   },
   plugins: [

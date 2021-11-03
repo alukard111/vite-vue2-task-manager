@@ -26,18 +26,21 @@
             </span>
             <div class="al-sign-in__input">
               <AlAuthInput 
-                :authPlaceholderInput="labelEmail"
-                :authTypeInput="typeEmail"
                 v-model="emailValue"
+                :authInputValue="emailValue"
+                :authPlaceholderInput="placeholderEmail"
+                :authTypeInput="typeEmail"
                 :authInputTypeValue="authInputTypeValueEmail"
-                ref="refInputEmail"
+                :authInputErrorStylePlaceholder="placeholderLoginError"
               />
               
               <AlAuthInput 
-                :authPlaceholderInput="labelPassword"
-                :authTypeInput="typePassword"
                 v-model="passwordValue"
+                :authInputValue="passwordValue"
+                :authPlaceholderInput="placeholderPassword"
+                :authTypeInput="typePassword"
                 :authInputTypeValue="authInputTypeValuePassword"
+                :authInputErrorStylePlaceholder="placeholderPasswordError"
               />
                 
               <div class="mt-5 flex justify-center">
@@ -71,13 +74,16 @@ export default {
 
 
   data: () => ({
-    labelEmail: 'E-mail',
-    labelPassword: 'Password',
+    placeholderEmail: 'E-mail',
+    placeholderPassword: 'Password',
 
     typeEmail: 'email',
     typePassword: 'password',
     authInputTypeValueEmail: 'email',
     authInputTypeValuePassword: 'password', 
+
+    placeholderLoginError: false,
+    placeholderPasswordError: false,
 
     emailValue: '',
     passwordValue: '',
@@ -91,12 +97,12 @@ export default {
   mounted() {
     // Если alert вылезет и перейти на др страницу, а затем вернуться -- alert так и будет весеть там
     // поэтому сообщение об ошибке предварительно вбиваем пустое на страницу.
-    this.$store.commit('setErrorMessageInState', '')
+    this.$store.commit('auth/SET_ERROR_MESSAGE_IN_STATE', '')
   },
   
   computed: {
     getErrorMessageToAlert() {
-      return this.$store.state.errorCreateUserInputAlertMessage
+      return this.$store.state.auth.errorAuthOrCreateUser
     }
   },
   
@@ -108,12 +114,20 @@ export default {
     },
 
     createAccount() {
-      this.$store.dispatch({
-        type: 'createAccountWithEmailAndPassword',
-        email: this.emailValue,
-        password: this.passwordValue,
-      })
+      if (this.isInputEmpty()) {
+        this.$store.dispatch({
+          type: 'auth/createAccountWithEmailAndPassword',
+          email: this.emailValue,
+          password: this.passwordValue,
+        })
+      }
     },
+
+    isInputEmpty() {
+      this.placeholderLoginError = !Boolean(this.emailValue)
+      this.placeholderPasswordError = !Boolean(this.passwordValue)
+      return !this.placeholderLoginError && !this.placeholderPasswordError
+    }
     
 
 
