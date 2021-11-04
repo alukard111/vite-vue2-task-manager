@@ -2,7 +2,7 @@
   <div class="al-auth__btn-box">
     <button 
       class="al-auth__btn"
-      :class="[...classesBtn]"
+      :class="[...classesBtn, ...classes]"
       @click="$emit('click')"
       >
       {{ authBtnName }}
@@ -23,11 +23,16 @@ export default {
       type: String,
       require: false,
       default: 'classic'
+    },
+    classes: {
+      type: Array,
+      require: false,
+      default: []
     }
   },
 
   data: () => ({
-    classesBtn: [],
+    classesBtn: [] 
   }),
 
   mounted() {

@@ -1,0 +1,20 @@
+{
+  "boards" : {
+    "nameBoard" : "nameBoards",
+    "columns" : {
+      "nameColumn": {
+        "nameColumn" : "NameColumn",
+        "TasksColumn" : {
+          "taskOne" : {
+            "taskTitle" : "TitleTask",
+            "taskDescription" : "taskDescription" 
+          },
+          "taskTwo" : {
+            "taskTitle" : "TitleTask",
+            "taskDescription" : "taskDescription" 
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 <template>
-  <div class="main-box-app">
-    <div class="box mx-auto w-full">
+  <div class="main-box-app ">
+    <div class="main-box-app__wrapper ">
       <AlAppMenu 
         @logout="signOutAuth()"
         @getUserDisplayName="getUserDisplayName()"
@@ -9,23 +9,21 @@
         :userPhotoURL="getUserPhotoURL"
         :toggleOptionsMenu="isToggleOptionsMenu"
       />
-      <div class="main-box-app__al-navbar-box" ref="navbarBox">
-        <div class="flex w-full main-box-app__al-navbar-wrapper transition ease-in-out 
-    duration-300  ">
-          <div class="main-box-app__navbar" ref="navbar" >
+      <div class="main-box-app__al-dashboard" ref="navbarBox">
+        <div class="main-box-app__al-navbar-wrapper">
+          <div class="main-box-app__navbar" style="" ref="navbar" >
             <AlAppNavbar  />
-
           </div>
           <div class="main-box-app__burger ">
             <AlAppBurgerNavbar 
-              @clickOnBurger="runBURGER()"
+              @clickOnBurger="burgerOnAndOff()"
             />
           </div>
-          <div class="flex justify-center items-center w-full">
-            <span class=" border border-2 border-red-200">
-              LOL
-            </span>
-          </div>
+          <div class="main-box-app__content" ref="contentBox">
+            <div class="main-box-app__al-board">
+              <AlColumn />
+            </div>
+          </div>  
         </div>
       </div>
       
@@ -39,13 +37,14 @@
 import AlAppMenu from '../components/AppBaseComponents/AlAppMenu.vue'
 import AlAppNavbar from '../components/AppBaseComponents/AlAppNavbar.vue'
 import AlAppBurgerNavbar from '../components/AppBaseComponents/AlAppBurgerNavbar.vue'
-
+import AlColumn from '../components/boards/AlColumn.vue'
 
 export default { 
   components: {
     AlAppMenu,
     AlAppNavbar,
-    AlAppBurgerNavbar
+    AlAppBurgerNavbar,
+    AlColumn,
   },
 
 
@@ -82,13 +81,13 @@ export default {
   },
 
   methods: {
-    runBURGER() {
-      const elNavbarWrapper = document.querySelector('.main-box-app__al-navbar-box')
-      if (elNavbarWrapper.style.marginLeft === `-${this.$refs.navbar.offsetWidth}px`) {
+    burgerOnAndOff() {
+      const elNavbarWrapper = document.querySelector('.main-box-app__al-dashboard')
+      this.$refs.contentBox.classList.toggle('main-box-app__content_disable-burger')
+      if (elNavbarWrapper.style.marginLeft === `${this.$refs.navbar.offsetWidth}px`) {
         elNavbarWrapper.style.marginLeft = `0px`
       } else {
-        elNavbarWrapper.style.marginLeft = `-${this.$refs.navbar.offsetWidth}px`
-        
+        elNavbarWrapper.style.marginLeft = `${this.$refs.navbar.offsetWidth}px`
       }
     },
 
@@ -125,31 +124,51 @@ export default {
     bg-gray-200
     h-screen
     m-0
+    overflow-hidden
   ;
 }
 
-.main-box-app__al-navbar-box {
+.main-box-app__wrapper {
   @apply
-    m-0
-    w-full
-    flex
-    justify-start
+    mx-auto 
+    w-full 
+    flex 
+    flex-col 
     transition
     ease-in-out
+    duration-300
+  ;
+}
+.main-box-app__al-dashboard {
+  @apply
+    m-0
+    w-screen
+    flex
+    justify-start
+    transition-all
+    ease-in-out
+    relative 
     duration-300  
-    relative
+  ;
+}
+.main-box-app__al-navbar-wrapper {
+  @apply
+    flex
+    w-full
+    overflow-hidden
   ;
 }
 .main-box-app__navbar {
    @apply
     m-0
     flex
-    w-auto
+    w-3/12
     justify-start
     transition
     ease-in-out
     duration-300  
-
+    absolute
+    -left-1/4
   ;
 }
 .main-box-app__burger {
@@ -165,6 +184,24 @@ export default {
     -translate-x-96
   ;
 }
-
+.main-box-app__content {
+  @apply
+    flex 
+    justify-center
+    items-center
+    
+    h-screen
+    overflow-x-auto 
+    justify-start
+    transition-all
+    duration-300
+  ;
+}
+.main-box-app__content_disable-burger {
+  @apply
+    
+    w-9/12
+  ;
+}
 
 </style> 

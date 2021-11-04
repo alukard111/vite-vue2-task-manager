@@ -2,7 +2,6 @@
   <div class="al-auth__input-box">
     <div class="al-auth__wrapper-input ">
       <label class="al-auth__label">
-        <!-- <p>{{ authLabelName }}</p> -->
         <input 
           :placeholder="authInputErrorStylePlaceholder ? 'Это обязательное поле' : authPlaceholderInput"
           :type="authTypeInput"
